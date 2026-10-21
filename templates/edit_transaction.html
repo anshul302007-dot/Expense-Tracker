@@ -1,0 +1,53 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Transaction</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+<div class="signup-container">
+    <h1>Edit Transaction</h1>
+
+    <form method="POST"
+          action="{{ url_for('edit_transaction', transaction_id=transaction['id']) }}">
+
+        <input type="text" name="description"
+               value="{{ transaction['description'] }}"
+               maxlength="200" required>
+
+        <input type="number" name="amount"
+               value="{{ '%.2f'|format(transaction['amount_paise'] / 100) }}"
+               min="0.01" step="0.01" required>
+
+        <select name="type" required>
+            <option value="income"
+                {% if transaction['type'] == 'income' %}selected{% endif %}>
+                Income
+            </option>
+            <option value="expense"
+                {% if transaction['type'] == 'expense' %}selected{% endif %}>
+                Expense
+            </option>
+        </select>
+
+        <select name="category" required>
+            {% for category in categories %}
+                <option value="{{ category }}"
+                    {% if transaction['category'] == category %}selected{% endif %}>
+                    {{ category }}
+                </option>
+            {% endfor %}
+        </select>
+
+        <button type="submit">Save Changes</button>
+    </form>
+
+    <p><a href="{{ url_for('dashboard') }}">Back to Dashboard</a></p>
+</div>
+
+</body>
+</html>

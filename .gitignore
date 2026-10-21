@@ -1,0 +1,11 @@
+.venv/
+venv/
+__pycache__/
+*.pyc
+expense.db
+*.db
+.env
+.env.*
+!.env.example
+instance/
+.vscode/

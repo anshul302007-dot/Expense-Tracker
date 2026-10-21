@@ -1,0 +1,152 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Expense Tracker Dashboard</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+
+<div class="dashboard-container">
+
+    <div class="dashboard-header">
+        <div>
+            <h1>💰 Expense Tracker</h1>
+            <h2>Welcome, {{ name }} 👋</h2>
+        </div>
+        <a href="{{ url_for('logout') }}" class="logout-btn">Logout</a>
+    </div>
+
+    <div class="summary">
+        <div class="card">
+            <h3>Total Income</h3>
+            <h2>₹{{ "%.2f"|format(income) }}</h2>
+        </div>
+        <div class="card">
+            <h3>Total Expenses</h3>
+            <h2>₹{{ "%.2f"|format(expense) }}</h2>
+        </div>
+        <div class="card">
+            <h3>Remaining Balance</h3>
+            <h2>₹{{ "%.2f"|format(balance) }}</h2>
+        </div>
+    </div>
+
+    <div class="transaction-section">
+        <h2>Add Transaction</h2>
+
+        <form action="{{ url_for('add_transaction') }}" method="POST">
+            <input type="text" name="description"
+                   placeholder="Description"
+                   maxlength="200" required>
+
+            <input type="number" name="amount"
+                   placeholder="Amount in ₹"
+                   min="0.01" step="0.01" required>
+
+            <select name="type" required>
+                <option value="">Select Type</option>
+                <option value="income">Income</option>
+                <option value="expense">Expense</option>
+            </select>
+
+            <select name="category" required>
+                <option value="">Select Category</option>
+                {% for category in categories %}
+                    <option value="{{ category }}">
+                        {{ category }}
+                    </option>
+                {% endfor %}
+            </select>
+
+            <button type="submit">Add Transaction</button>
+        </form>
+    </div>
+
+    <div class="charts-section">
+        <h2>Financial Analytics</h2>
+
+        <div class="charts-grid">
+            <div class="chart-card">
+                <h3>Spending by Category</h3>
+                <canvas id="categoryChart"></canvas>
+            </div>
+
+            <div class="chart-card">
+                <h3>Monthly Income vs Expenses</h3>
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+    </div>
+
+    <div class="history">
+        <h2>Spending by Category</h2>
+
+        {% if category_totals %}
+            {% for item in category_totals %}
+                <div class="category-row">
+                    <strong>{{ item.name }}</strong>
+                    <span>₹{{ "%.2f"|format(item.amount) }}</span>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No category expenses yet.</p>
+        {% endif %}
+    </div>
+
+    <div class="history">
+        <h2>Recent Transactions</h2>
+
+        {% if transactions %}
+            {% for t in transactions %}
+                <div class="transaction-item">
+                    <strong>{{ t["description"] }}</strong>
+                    <p>{{ t["category"] }} | {{ t["date"] }}</p>
+
+                    {% if t["type"] == "income" %}
+                        <p style="color:green;">
+                            + ₹{{ "%.2f"|format(t["amount_paise"] / 100) }}
+                        </p>
+                    {% else %}
+                        <p style="color:red;">
+                            - ₹{{ "%.2f"|format(t["amount_paise"] / 100) }}
+                        </p>
+                    {% endif %}
+
+                    <a class="edit-btn"
+                       href="{{ url_for('edit_transaction', transaction_id=t['id']) }}">
+                        Edit
+                    </a>
+
+                    <form
+                        action="{{ url_for('delete_transaction', transaction_id=t['id']) }}"
+                        method="POST"
+                        onsubmit="return confirm('Delete this transaction?');"
+                    >
+                        <button type="submit" class="delete-btn">Delete</button>
+                    </form>
+                </div>
+                <hr>
+            {% endfor %}
+        {% else %}
+            <p>No transactions added yet.</p>
+        {% endif %}
+    </div>
+
+</div>
+
+<script id="category-data" type="application/json">
+    {{ category_totals | tojson }}
+</script>
+
+<script id="monthly-data" type="application/json">
+    {{ monthly_data | tojson }}
+</script>
+
+<script src="{{ url_for('static', filename='charts.js') }}"></script>
+
+</body>
+</html>
