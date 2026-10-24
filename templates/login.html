@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +13,9 @@
         <h2>Welcome Back!</h2>
         <p>Login to manage your expenses</p>
 
-        <form method="POST" action="/login">
+        <form method="POST" action="{{ url_for('login') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input type="email" name="email"
                    placeholder="Email Address" required>
 
@@ -24,8 +26,10 @@
         </form>
 
         <p>Don't have an account?
-            <a href="/signup">Sign Up</a>
+            <a href="{{ url_for('signup') }}">Sign Up</a>
         </p>
     </div>
 </body>
 </html>
+
+

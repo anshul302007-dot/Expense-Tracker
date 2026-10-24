@@ -9,3 +9,6 @@ expense.db
 !.env.example
 instance/
 .vscode/
+
+app_backup.py
+templates_backup/

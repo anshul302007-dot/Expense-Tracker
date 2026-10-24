@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -13,7 +13,9 @@
         <h2>Create Account</h2>
         <p>Start managing your money smarter!</p>
 
-        <form method="POST" action="/signup">
+        <form method="POST" action="{{ url_for('signup') }}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input type="text" name="name" placeholder="Full Name" required>
             <input type="email" name="email" placeholder="Email Address" required>
             <input type="password" name="password" placeholder="Password" minlength="8" required>
@@ -22,7 +24,9 @@
             <button type="submit">Sign Up</button>
         </form>
 
-        <p>Already have an account? <a href="/login">Login</a></p>
+        <p>Already have an account? <a href="{{ url_for('login') }}">Login</a></p>
     </div>
 </body>
 </html>
+
+

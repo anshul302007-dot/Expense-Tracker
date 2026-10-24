@@ -1,4 +1,4 @@
-
+﻿
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -39,6 +39,8 @@
         <h2>Add Transaction</h2>
 
         <form action="{{ url_for('add_transaction') }}" method="POST">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+
             <input type="text" name="description"
                    placeholder="Description"
                    maxlength="200" required>
@@ -126,6 +128,7 @@
                         method="POST"
                         onsubmit="return confirm('Delete this transaction?');"
                     >
+                        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
                         <button type="submit" class="delete-btn">Delete</button>
                     </form>
                 </div>
@@ -150,3 +153,5 @@
 
 </body>
 </html>
+
+
